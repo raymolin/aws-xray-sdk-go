@@ -16,8 +16,8 @@ import (
 	"time"
 
 	"github.com/aws/aws-xray-sdk-go/header"
+	"github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/internal/plugins"
-	"github.com/aws/aws-xray-sdk-go/logger"
 )
 
 // NewTraceID generates a string format of random trace ID.
@@ -46,7 +46,7 @@ func BeginSegment(ctx context.Context, name string) (context.Context, *Segment) 
 		name = name[:200]
 	}
 	seg := &Segment{parent: nil}
-	logger.Debugf("Beginning segment named %s", name)
+	log.Debugf("Beginning segment named %s", name)
 	seg.ParentSegment = seg
 
 	seg.Lock()
@@ -85,7 +85,7 @@ func BeginSubsegment(ctx context.Context, name string) (context.Context, *Segmen
 	}
 
 	seg := &Segment{parent: parent}
-	logger.Debugf("Beginning subsegment named %s", name)
+	log.Debugf("Beginning subsegment named %s", name)
 	seg.ParentSegment = parent.ParentSegment
 	seg.ParentSegment.totalSubSegments++
 	seg.Lock()
@@ -125,9 +125,9 @@ func (seg *Segment) Close(err error) {
 	seg.Lock()
 	defer seg.Unlock()
 	if seg.parent != nil {
-		logger.Debugf("Closing subsegment named %s", seg.Name)
+		log.Debugf("Closing subsegment named %s", seg.Name)
 	} else {
-		logger.Debugf("Closing segment named %s", seg.Name)
+		log.Debugf("Closing segment named %s", seg.Name)
 	}
 	seg.EndTime = float64(time.Now().UnixNano()) / float64(time.Second)
 	seg.InProgress = false
@@ -185,28 +185,6 @@ func (seg *Segment) safeFlush() {
 	seg.openSegments--
 	seg.flush()
 }
-
-/*
-func (seg *Segment) flush(decrement bool) {
-	seg.Lock()
-	if decrement {
-		seg.openSegments--
-	}
-	flush := (seg.openSegments == 0 && seg.EndTime > 0) || seg.ContextDone
-	seg.Unlock()
-
-	if flush {
-		if seg.parent == nil {
-			seg.Lock()
-			seg.Emitted = true
-			seg.Unlock()
-			emit(seg)
-		} else {
-			seg.parent.flush(true)
-		}
-	}
-}
-*/
 
 func (seg *Segment) root() *Segment {
 	if seg.parent == nil {

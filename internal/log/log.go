@@ -1,4 +1,18 @@
-package logger
+package log
+
+import (
+	"github.com/aws/aws-xray-sdk-go/logger"
+)
+
+func init() {
+	internalLogger = &logger.LoggerImpl{InfoLvl: true}
+}
+
+var internalLogger logger.Logger
+
+func InjectLogger(l logger.Logger) {
+	internalLogger = l
+}
 
 func Debug(msg string) {
 	internalLogger.Debug(msg)

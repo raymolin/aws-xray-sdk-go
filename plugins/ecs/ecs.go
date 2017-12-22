@@ -11,8 +11,8 @@ package ecs
 import (
 	"os"
 
+	"github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/internal/plugins"
-	"github.com/aws/aws-xray-sdk-go/logger"
 )
 
 func init() {
@@ -25,7 +25,7 @@ func addPluginMetadata(pluginmd *plugins.PluginMetadata) {
 	hostname, err := os.Hostname()
 
 	if err != nil {
-		logger.Errorf("Unable to retrieve hostname from OS. %v", err)
+		log.Errorf("Unable to retrieve hostname from OS. %v", err)
 		return
 	}
 

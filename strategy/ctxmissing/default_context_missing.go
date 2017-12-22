@@ -8,7 +8,7 @@
 
 package ctxmissing
 
-import "github.com/aws/aws-xray-sdk-go/logger"
+import "github.com/aws/aws-xray-sdk-go/internal/log"
 
 // RuntimeErrorStrategy provides the AWS_XRAY_CONTEXT_MISSING
 // environment variable value for enabling the runtime error
@@ -48,5 +48,5 @@ func (dr *DefaultRuntimeErrorStrategy) ContextMissing(v interface{}) {
 // ContextMissing logs an error message when the
 // segment context is missing.
 func (dl *DefaultLogErrorStrategy) ContextMissing(v interface{}) {
-	logger.Errorf("Suppressing AWS X-Ray context missing panic: %v", v)
+	log.Errorf("Suppressing AWS X-Ray context missing panic: %v", v)
 }

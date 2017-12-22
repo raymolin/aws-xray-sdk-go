@@ -16,7 +16,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-xray-sdk-go/header"
-	"github.com/aws/aws-xray-sdk-go/logger"
+	"github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/pattern"
 )
 
@@ -116,13 +116,13 @@ func Handler(sn SegmentNamer, h http.Handler) http.Handler {
 		switch trace["Sampled"] {
 		case "0":
 			seg.Sampled = false
-			logger.Debug("Incoming header decided: Sampled=false")
+			log.Debug("Incoming header decided: Sampled=false")
 		case "1":
 			seg.Sampled = true
-			logger.Debug("Incoming header decided: Sampled=true")
+			log.Debug("Incoming header decided: Sampled=true")
 		default:
 			seg.Sampled = privateCfg.SamplingStrategy().ShouldTrace(r.Host, r.URL.String(), r.Method)
-			logger.Debugf("SamplingStrategy decided: %t", seg.Sampled)
+			log.Debugf("SamplingStrategy decided: %t", seg.Sampled)
 		}
 		if trace["Sampled"] == "?" {
 			respHeader.WriteString(";Sampled=")

@@ -12,8 +12,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
+	"github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/internal/plugins"
-	"github.com/aws/aws-xray-sdk-go/logger"
 )
 
 func init() {
@@ -27,14 +27,14 @@ func addPluginMetadata(pluginmd *plugins.PluginMetadata) {
 
 	rawConfig, err := ioutil.ReadFile(ebConfigPath)
 	if err != nil {
-		logger.Errorf("Unable to read Elastic Beanstalk configuration file %s: %v", ebConfigPath, err)
+		log.Errorf("Unable to read Elastic Beanstalk configuration file %s: %v", ebConfigPath, err)
 		return
 	}
 
 	config := &plugins.BeanstalkMetadata{}
 	err = json.Unmarshal(rawConfig, config)
 	if err != nil {
-		logger.Errorf("Unable to unmarshal Elastic Beanstalk configuration file %s: %v", ebConfigPath, err)
+		log.Errorf("Unable to unmarshal Elastic Beanstalk configuration file %s: %v", ebConfigPath, err)
 		return
 	}
 

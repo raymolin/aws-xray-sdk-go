@@ -16,16 +16,6 @@ type Logger interface {
 	Errorf(format string, args ...interface{})
 }
 
-func init() {
-	internalLogger = &LoggerImpl{}
-}
-
-var internalLogger Logger
-
-func InjectLogger(l Logger) {
-	internalLogger = l
-}
-
 type LoggerImpl struct {
 	DebugLvl bool
 	InfoLvl  bool

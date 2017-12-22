@@ -14,6 +14,7 @@ import (
 	"strings"
 	"testing"
 
+	ilog "github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/logger"
 	"github.com/stretchr/testify/assert"
 )
@@ -43,14 +44,7 @@ func (sw *LogWriter) Write(p []byte) (n int, err error) {
 
 func LogSetup() *LogWriter {
 	writer := &LogWriter{}
-	/*
-		logger, err := log.LoggerFromWriterWithMinLevelAndFormat(writer, log.TraceLvl, "%Ns [%Level] %Msg")
-		if err != nil {
-			panic(err)
-		}
-		log.ReplaceLogger(logger)
-	*/
-	logger.InjectLogger(writer)
+	ilog.InjectLogger(writer)
 	return writer
 }
 
@@ -65,8 +59,8 @@ func TestDefaultRuntimeErrorStrategy(t *testing.T) {
 }
 
 func TestDefaultLogErrorStrategy(t *testing.T) {
-	logger := LogSetup()
-	l := NewDefaultLogErrorStrategy()
-	l.ContextMissing("TestLogError")
-	assert.True(t, strings.Contains(logger.Logs[0], "Suppressing AWS X-Ray context missing panic: [[TestLogError]]"))
+	l := LogSetup()
+	s := NewDefaultLogErrorStrategy()
+	s.ContextMissing("TestLogError")
+	assert.True(t, strings.Contains(l.Logs[0], "Suppressing AWS X-Ray context missing panic: [[TestLogError]]"))
 }

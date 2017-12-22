@@ -13,6 +13,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/logger"
 	"github.com/aws/aws-xray-sdk-go/strategy/ctxmissing"
 	"github.com/aws/aws-xray-sdk-go/strategy/exception"
@@ -132,7 +133,7 @@ func Configure(c Config) error {
 
 	if c.Logger != nil {
 		privateCfg.logger = c.Logger
-		logger.InjectLogger(privateCfg.logger)
+		log.InjectLogger(privateCfg.logger)
 	}
 
 	switch len(errors) {
