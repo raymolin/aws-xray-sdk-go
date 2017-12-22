@@ -5,6 +5,13 @@ import (
 	"log"
 )
 
+const (
+	InfoLvl = iota
+	DebugLvl
+	WarnLvl
+	ErrorLvl
+)
+
 type Logger interface {
 	Debug(msg string)
 	Debugf(format string, args ...interface{})
@@ -14,6 +21,7 @@ type Logger interface {
 	Warnf(format string, args ...interface{})
 	Error(msg string)
 	Errorf(format string, args ...interface{})
+	GetLogLevel() int
 }
 
 type LoggerImpl struct {
@@ -66,4 +74,16 @@ func (l *LoggerImpl) Error(msg string) {
 
 func (l *LoggerImpl) Errorf(format string, args ...interface{}) {
 	log.Printf(fmt.Sprintf("[ERROR] %s", format), args)
+}
+
+func (l *LoggerImpl) GetLogLevel() int {
+	if l.InfoLvl {
+		return InfoLvl
+	} else if l.DebugLvl {
+		return DebugLvl
+	} else if l.WarnLvl {
+		return WarnLvl
+	} else {
+		return ErrorLvl
+	}
 }

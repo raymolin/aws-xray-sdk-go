@@ -15,6 +15,7 @@ import (
 	"sync"
 
 	"github.com/aws/aws-xray-sdk-go/internal/log"
+	"github.com/aws/aws-xray-sdk-go/logger"
 )
 
 // Header is added before sending segments to daemon.
@@ -43,9 +44,11 @@ func emit(seg *Segment) {
 	}
 
 	for _, p := range packSegments(seg, nil) {
-		b := &bytes.Buffer{}
-		json.Indent(b, p, "", " ")
-		log.Debug(b.String())
+		if log.GetLogLevel() == logger.DebugLvl {
+			b := &bytes.Buffer{}
+			json.Indent(b, p, "", " ")
+			log.Debug(b.String())
+		}
 		e.Lock()
 		_, err := e.conn.Write(append(Header, p...))
 		if err != nil {

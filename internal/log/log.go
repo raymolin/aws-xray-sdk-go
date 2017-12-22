@@ -45,3 +45,7 @@ func Error(msg string) {
 func Errorf(format string, args ...interface{}) {
 	internalLogger.Errorf(format, args)
 }
+
+func GetLogLevel() int {
+	return internalLogger.GetLogLevel()
+}
