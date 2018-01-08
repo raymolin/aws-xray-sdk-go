@@ -12,8 +12,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
+	"github.com/aws/aws-xray-sdk-go/internal/log"
 	"github.com/aws/aws-xray-sdk-go/internal/plugins"
-	log "github.com/cihub/seelog"
 )
 
 func init() {
